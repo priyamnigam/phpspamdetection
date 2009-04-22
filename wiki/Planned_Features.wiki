@@ -3,6 +3,7 @@
 
 = Planned Features =
 
+  * Include stemming by using http://tartarus.org/~martin/PorterStemmer/php.txt
   * Vector space object.
   * Removal of Database dependance.
   * Undo feature to undo last X number of training
