@@ -1,0 +1,9 @@
+#summary Features and upgrades planned
+#labels Phase-Requirements,Phase-QA
+
+= Planned Features =
+
+  * Vector space object.
+  * Removal of Database dependance.
+  * Undo feature to undo last X number of training
+  * Train method which only adds additional training if it increases accuracy
