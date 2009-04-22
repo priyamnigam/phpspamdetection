@@ -19,8 +19,8 @@ An example of how to use the filter can be found in source and in packages. Look
 
 The first step is to ensure you have a database connection.
 
-`$link = mysql_connect('localhost', 'database_user', 'user_password') or die('Could not connect: ' . mysql_error());
-mysql_select_db('my_database') or die('Could not select database');`
+{{{$link = mysql_connect('localhost', 'database_user', 'user_password') or die('Could not connect: ' . mysql_error());
+mysql_select_db('my_database') or die('Could not select database');}}}
 
 Then include the filter.
 
