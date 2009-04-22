@@ -54,4 +54,4 @@ To reset the filter use the following method.
 
 `$spamchecker->resetSpam();`
 
-_WARNING_ this will remove *everything* that you have trained, so you will end up with essentially a newly installed filter which knowns nothing.
+_WARNING_ this will remove *everything* that you have trained, so you will end up with essentially a newly installed filter which is unable to classify anything.
