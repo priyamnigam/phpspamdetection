@@ -26,7 +26,9 @@ mysql_select_db('my_database') or die('Could not select database');
 
 Then include the filter.
 
-`include_once('spamchecker.php');`
+{{{
+include_once('spamchecker.php');
+}}}
 
 You are then ready to go.
 
@@ -36,17 +38,23 @@ You are then ready to go.
 
 To train on spam use the following method call
 
-`$spamchecker->train('this is spam viagra',true);`
+{{{
+$spamchecker->train('this is spam viagra',true);
+}}}
 
 To train on ham use the following method call
 
-`$spamchecker->train('this is not spam kittens',false);`
+{{{
+$spamchecker->train('this is not spam kittens',false);
+}}}
 
 === Check Spam Rating ===
 
 To find the spam rating of some text use the following method call.
 
-`$spamrating = $spamchecker->checkSpam('is this spam');`
+{{{
+$spamrating = $spamchecker->checkSpam('is this spam');
+}}}
 
 The return value will be a number from 0 to 1 which indicates the level of spamicity. The closer a value is to 1 the more likely it is for the text to be spam.
 
@@ -54,6 +62,8 @@ The return value will be a number from 0 to 1 which indicates the level of spami
 
 To reset the filter use the following method.
 
-`$spamchecker->resetSpam();`
+{{{
+$spamchecker->resetSpam();
+}}}
 
 _WARNING_ this will remove *everything* that you have trained, so you will end up with essentially a newly installed filter which is unable to classify anything.
