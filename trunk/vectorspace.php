@@ -86,14 +86,23 @@ class vectorspace {
   
   
   function checktype($text) {
-	  $rowsr = mysql_query('SELECT text, category FROM store');
+	  $rows = mysql_query('SELECT text, category FROM store');
 	  $results = array();
 	  
 	  $text_concordance = $this->concordance($text);
 	  
-	  while ($line = mysql_fetch_array($rowsr)) {
-	    echo $line[1].' '.$this->relation($text_concordance,$this->concordance($line[0])).'<br>';
+	  while ($line = mysql_fetch_array($rows)) {
+		$relation = $this->relation($text_concordance,$this->concordance($line[0]));
+	    //echo $line[1].' '..'<br>';
+		if(array_key_exists($line[1],$results)){
+		  $results[$line[1]] = ($results[$line[1]] + $relation) / 2;
+		}
+		else{
+		  $results[$line[1]] = $relation;
+		}
 	  }
+	  
+	  return $results;
   }
 }
 ?>

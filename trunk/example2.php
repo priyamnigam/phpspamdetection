@@ -43,7 +43,7 @@ $vectorspace = new vectorspace();
 
 if(isset($_REQUEST['check']) && strlen($_REQUEST['check']) != 0) {
   // should display all of the scores
-  echo $vectorspace->checktype($_REQUEST['check'])."<br>";
+  print_r($vectorspace->checktype($_REQUEST['check']));
 }
 
 
@@ -59,7 +59,7 @@ if(isset($_REQUEST['reset'])) {
 
 
 if(isset($_REQUEST['trainonspam'])) {
-  $result = mysql_query("SELECT name,content FROM foundspam;");
+  $result = mysql_query("SELECT name,content FROM foundspam UNION SELECT name,content FROM testspam;");
   
   echo "Trained On Spam<br />";
   while ($line = mysql_fetch_array($result)) {
@@ -68,52 +68,55 @@ if(isset($_REQUEST['trainonspam'])) {
 }
 
 if(isset($_REQUEST['trainonham'])) {
-  $result = mysql_query("SELECT name,comment FROM comment;");
+  $result = mysql_query("SELECT name,comment FROM comment UNION SELECT name,comment FROM testham;");
   
-  echo "Trained On Spam<br />";
+  echo "Trained On Ham<br />";
   while ($line = mysql_fetch_array($result)) {
 	$vectorspace->addtostore($line[0].' '.$line[1],'ham');
   }
 }
 
 if(isset($_REQUEST['test'])) {
-	/*
+	
   $result = mysql_query("SELECT name,comment FROM testham;");
   
   $foundspam = 0;
   $totalspam = 0;
   echo "<h1>Checking Ham</h1><br />";
   while ($line = mysql_fetch_array($result)) {
-	$spamrating = $spamchecker->checkSpam($line[0].' '.$line[1]);
-	echo "<dl>";
-    if($spamrating > 0.97) {
-	    echo "<li>".$spamrating." - ".substr(strip_tags($line[0].' '.$line[1]),0,60)."</li>";
+	$spamrating = $vectorspace->checktype($line[0].' '.$line[1]);
+	
+	if($spamrating['spam'] > $spamrating['ham']){
+		print_r($spamrating);
+		echo substr(strip_tags($line[0].' '.$line[1]),0,60).'<br>';
 		$foundspam++;
 	}
 	$totalspam++;
-	echo "</dl>";
   }
+  
   echo "<br>".$totalspam.' '.$foundspam;
   echo "<br><b>Percentage</b> - ".($foundspam/$totalspam)*100;
   
-  $result = mysql_query("SELECT name, content FROM testspam;");
+  
+  $result = mysql_query("SELECT name,content FROM testspam;");
   
   $foundspam = 0;
   $totalspam = 0;
   echo "<h1>Checking Spam</h1><br />";
   while ($line = mysql_fetch_array($result)) {
-	$spamrating = $spamchecker->checkSpam($line[0].' '.$line[1]);
-	echo "<dl>";
-    if($spamrating < 0.97) {
-	    echo "<li>".$spamrating." - ".substr(strip_tags($line[0].' '.$line[1]),0,60)."</li>";
+	$spamrating = $vectorspace->checktype($line[0].' '.$line[1]);
+	
+	if($spamrating['spam'] < $spamrating['ham']){
+		print_r($spamrating);
+		echo substr(strip_tags($line[0].' '.$line[1]),0,60).'<br>';
 		$foundspam++;
 	}
 	$totalspam++;
-	echo "</dl>";
-  }  
+  }
+  
   echo "<br>".$totalspam.' '.$foundspam;
   echo "<br><b>Percentage</b> - ".($foundspam/$totalspam)*100;
-  */
+  
 }
 
 
