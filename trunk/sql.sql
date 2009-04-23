@@ -48,3 +48,42 @@ CREATE TABLE `totals` (
 -- 
 
 INSERT INTO `totals` VALUES (1, 0, 0);
+
+
+
+
+-- ---------------------------------------------------------- --------------------------------------------------------
+
+
+-- phpMyAdmin SQL Dump
+-- version 2.11.4
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Apr 23, 2009 at 03:44 PM
+-- Server version: 5.0.51
+-- PHP Version: 5.2.5
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- Database: `spam`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `store`
+--
+
+CREATE TABLE IF NOT EXISTS `store` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `text` text NOT NULL,
+  `category` varchar(100) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3630 ;
+
+
+
+
+
