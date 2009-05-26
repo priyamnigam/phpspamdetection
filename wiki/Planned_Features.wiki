@@ -10,3 +10,4 @@
   * Removal of Database dependance.
   * Undo feature to undo last X number of training
   * Train method which only adds additional training if it increases accuracy
+  * ~~Collect sample spam using online honey-pot~~
