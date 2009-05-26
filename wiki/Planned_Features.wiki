@@ -6,7 +6,7 @@
   * White list and black list support of IP's, names and reverse DNS
   * External connections to lookup known blacklists.
   * Include stemming by using http://tartarus.org/~martin/PorterStemmer/php.txt
-  * Vector space object for text comparison.
+  * ~~Vector space object for text comparison.~~
   * Removal of Database dependance.
   * Undo feature to undo last X number of training
   * Train method which only adds additional training if it increases accuracy
