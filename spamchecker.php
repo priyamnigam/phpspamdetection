@@ -24,6 +24,11 @@
  * Updated 5 April 2009 
  * Updated to fix a variety of small niggling bugs which caused incorrect
  * classification of spam.
+ *
+ * Updated 17 November 2009
+ * Updated to add fix for issue 1 raised by fmonnard. Fix applied provided by
+ * fmonnard and orrd101.
+ * 
  */
 class spamchecker {
 
@@ -162,17 +167,11 @@ class spamchecker {
     $b = null;
     
     foreach ($spamratings as $token) {
-      if($a == null)
-        $a = (float)$token;
-      else
-        $a = $a * $token;  
-      
-      if($b == null)
-        $b = 1-(float)$token;
-      else
-        $b = $b * (1-(float)$token);      
-      
+      $token = max($token,0.01);
+      $a = is_null($a) ? (float)$token : $a * $token;
+      $b = is_null($b) ? 1-(float)$token : $b * (1-(float)$token);
     }
+
 
 	$spam = (float)0;
     $spam = (float)$a/(float)((float)$a+(float)$b);
