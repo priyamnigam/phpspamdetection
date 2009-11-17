@@ -172,7 +172,6 @@ class spamchecker {
       $b = is_null($b) ? 1-(float)$token : $b * (1-(float)$token);
     }
 
-
 	$spam = (float)0;
     $spam = (float)$a/(float)((float)$a+(float)$b);
 
