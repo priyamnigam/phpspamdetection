@@ -31,11 +31,16 @@ class SpamChecker {
     $text = preg_replace('/\s\s+/',' ',$text);
     $text = strtolower($text);
     $temparray = explode(' ',$text);
+
+
+    $gettokenquery = $this->dbh->prepare
+      ('select `spamid`,`spamcount`,`hamcount` from spam 
+        where token=? limit 0,1;');
+
     foreach($temparray as $token) {
-      $query = $this->dbh->prepare
-        ('select `spamid` from spam where token=? limit 0,1;');
-      $query->execute(array($token));
-      $result = $query->fetchAll();
+      $gettokenquery->execute(array($token));
+      $result = $gettokenquery->fetchAll();
+
       if(count($result) == 0) {
         if($isspam) {
           $query = $this->dbh->prepare
@@ -44,9 +49,32 @@ class SpamChecker {
           $insert = $query->execute(array($token));
         }
         else {
+          $query = $this->dbh->prepare
+            ("insert into `spam` (`token`,`spamcount`,`hamcount`,
+              `spamrating`) values (?,'0','1','0');");
+          $insert = $query->execute(array($token));
         }
       }
-      else {
+      else { // Already exists in the database
+        $spamcount = $result[0]['spamcount'];
+        $hamcount = $result[0]['hamcount'];
+
+        if($isspam){
+          $spamcount++;
+        }
+        else {
+          $hamcount++;
+        }
+
+        $hamprob = $hamcount/$totalham;
+        $spamprob = $spamcount/$totalspam;
+        $spamrating = $spamprob/($hamprob+$spamprob);
+
+        $query = $this->dbh->prepare
+          ("update `spam` set `spamcount`=?, `hamcount`=?,
+            `spamrating`=? where token=? limit 1;");
+        $query->execute(array($spamcount,$hamcount,
+                              $spamrating,$token));
       }
     }
   }
@@ -55,6 +83,36 @@ class SpamChecker {
     if(is_null($this->dbh)) {
       throw new Exception("Database connection is null");
     }
+
+    $text = preg_replace('/\W+/',' ',$text);
+    $text = preg_replace('/\s\s+/',' ',$text);
+    $text = strtolower($text);
+    $temparray = explode(' ',$text);
+
+    $gettokenquery = $this->dbh->prepare
+      ('select `token`,`spamrating` from spam where token=? limit 0,1;');
+    $spamratings = array();
+    foreach($temparray as $token) {
+      $gettokenquery->execute(array($token));
+      $result = $gettokenquery->fetchAll();
+      $spamrating = $result[0]['spamrating'];
+      if($spamrating == ''){
+        $spamrating = 0.4;
+      }
+      $spamratings[] = $spamrating;
+    }
+
+    $a = null;
+    $b = null;
+
+    foreach($spamratings as $rating) {
+      $rating = max($rating,0.01);
+      $a = is_null($a) ? (float)$rating : $a * $rating;
+      $b = is_null($b) ? 1-(float)$rating : $b * (1-(float)$rating);
+    }
+    $spam = (float)0;
+    $spam = (float)$a/(float)((float)$a+(float)$b);
+    return $spam;
   }
 
   function resetFilter() {
@@ -63,6 +121,8 @@ class SpamChecker {
     }
     $trun = $this->dbh->prepare('TRUNCATE TABLE `spam`;');
     $trun->execute();
+    $trun = $this->dbh->prepare('update totals set totalspam=0, 
+                                 settotalham=0 limit 1;');
   }
 }
 
@@ -77,6 +137,17 @@ catch(PDOException $ex) {
 $sf = new spamchecker();
 $sf->dbh = $dbh;
 $sf->resetFilter();
-$sf->trainFilter('this is some spam <html> 4299u09u89(*&$%(*&$%     sdf');
+//$sf->trainFilter('this is some spam <html> 4299u09u89(*&$%(*&$%     sdf');
 //$sf->trainFilter('this is some spam',false);
+echo $sf->checkSpam('this is some spam');
+
+
+/*$token = 'this';
+$query = $dbh->prepare
+  ('select `spamid` from spam where token=? limit 0,1;');
+$query->execute(array($token));
+$result = $query->fetchAll();
+echo '<br><br>';
+print_r($result);*/
+
 ?>
