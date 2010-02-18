@@ -66,8 +66,14 @@ class SpamChecker {
           $hamcount++;
         }
 
-        $hamprob = $hamcount/$totalham;
-        $spamprob = $spamcount/$totalspam;
+        $hamprob = 0;
+        $spamprob = 0;
+        if($totalham != 0){
+          $hamprob = $hamcount/$totalham;
+        }
+        if($totalspam != 0) {
+          $spamprob = $spamcount/$totalspam;
+        }
         $spamrating = $spamprob/($hamprob+$spamprob);
 
         $query = $this->dbh->prepare
@@ -121,8 +127,9 @@ class SpamChecker {
     }
     $trun = $this->dbh->prepare('TRUNCATE TABLE `spam`;');
     $trun->execute();
-    $trun = $this->dbh->prepare('update totals set totalspam=0, 
-                                 settotalham=0 limit 1;');
+    $trun = $this->dbh->prepare
+              ('update totals set totalspam=0, totalham=0 limit 1;');
+    $trun->execute();
   }
 }
 
@@ -136,18 +143,21 @@ catch(PDOException $ex) {
 
 $sf = new spamchecker();
 $sf->dbh = $dbh;
-$sf->resetFilter();
+//$sf->resetFilter();
 //$sf->trainFilter('this is some spam <html> 4299u09u89(*&$%(*&$%     sdf');
-//$sf->trainFilter('this is some spam',false);
-echo $sf->checkSpam('this is some spam');
+//$sf->trainFilter('this is some spam');
+//echo $sf->checkSpam('this is some spam');
 
 
-/*$token = 'this';
-$query = $dbh->prepare
-  ('select `spamid` from spam where token=? limit 0,1;');
-$query->execute(array($token));
+//echo $sf->checkSpam('this is not spam because it is by me');
+
+/*$query = $dbh->prepare
+  ('select `content` from samplespam limit 0,200;');
+$query->execute();
 $result = $query->fetchAll();
-echo '<br><br>';
-print_r($result);*/
+foreach($result as $res){
+  //$sf->trainFilter($res['content'],true);
+  echo $sf->checkSpam($res['content']).'<br>';
+}*/
 
 ?>
