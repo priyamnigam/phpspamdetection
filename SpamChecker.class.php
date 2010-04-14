@@ -132,32 +132,4 @@ class SpamChecker {
     $trun->execute();
   }
 }
-
-try {
-  $dbh = new PDO('mysql:host=localhost;dbname=spam','root','dascene123');
-}
-catch(PDOException $ex) {
-  echo 'Connection Error : '.$ex->getMessage();
-  exit();
-}
-
-$sf = new spamchecker();
-$sf->dbh = $dbh;
-//$sf->resetFilter();
-//$sf->trainFilter('this is some spam <html> 4299u09u89(*&$%(*&$%     sdf');
-//$sf->trainFilter('this is some spam');
-//echo $sf->checkSpam('this is some spam');
-
-
-//echo $sf->checkSpam('this is not spam because it is by me');
-
-/*$query = $dbh->prepare
-  ('select `content` from samplespam limit 0,200;');
-$query->execute();
-$result = $query->fetchAll();
-foreach($result as $res){
-  //$sf->trainFilter($res['content'],true);
-  echo $sf->checkSpam($res['content']).'<br>';
-}*/
-
 ?>
