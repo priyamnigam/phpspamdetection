@@ -1,0 +1,3 @@
+Some data sets to test the filter on.
+
+http://www.aclweb.org/aclwiki/index.php?title=Spam_filtering_datasets
