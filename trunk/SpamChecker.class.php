@@ -32,7 +32,6 @@ class SpamChecker {
     $text = strtolower($text);
     $temparray = explode(' ',$text);
 
-
     $gettokenquery = $this->dbh->prepare
       ('select `spamid`,`spamcount`,`hamcount` from spam 
         where token=? limit 0,1;');
@@ -74,7 +73,12 @@ class SpamChecker {
         if($totalspam != 0) {
           $spamprob = $spamcount/$totalspam;
         }
-        $spamrating = $spamprob/($hamprob+$spamprob);
+        if($hamprob+$spamprob != 0) {
+          $spamrating = $spamprob/($hamprob+$spamprob);
+        }
+        else {
+          $spamrating = 0;
+        }
 
         $query = $this->dbh->prepare
           ("update `spam` set `spamcount`=?, `hamcount`=?,
@@ -117,7 +121,9 @@ class SpamChecker {
       $b = is_null($b) ? 1-(float)$rating : $b * (1-(float)$rating);
     }
     $spam = (float)0;
-    $spam = (float)$a/(float)((float)$a+(float)$b);
+    if((float)((float)$a+(float)$b) != 0) {
+      $spam = (float)$a/(float)((float)$a+(float)$b);
+    }
     return $spam;
   }
 
